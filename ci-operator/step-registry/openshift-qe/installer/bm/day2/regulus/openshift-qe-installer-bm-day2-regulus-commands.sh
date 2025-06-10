@@ -17,7 +17,9 @@ REPO_NAME=${REPO_NAME:-}
 PULL_NUMBER=${PULL_NUMBER:-}
 BASTION="${BASTION:-}"
 LAB_CLOUD="${LAB_CLOUD:-}"
-LAB_CLOUD=$(cat ${CLUSTER_PROFILE_DIR}/lab_cloud)
+if [ -f "${CLUSTER_PROFILE_DIR}/lab_cloud" ]; then
+    LAB_CLOUD=$(cat ${CLUSTER_PROFILE_DIR}/lab_cloud)
+fi
 
 if [ -z "${RUNLOCAL:-}" ]; then
   bastion=$(cat  /bm/address)
@@ -127,9 +129,13 @@ run-regulus() {
     set -o pipefail
     cd ${regulus_repo}
     bash ./run_cpt.sh
+    if [ -f '/tmp/clean-resources.sh' ]; then
+        bash /tmp/clean-resources.sh
+    fi 
   "
 }
 
 run-regulus
+
 
 # EOF
